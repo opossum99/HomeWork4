@@ -1,7 +1,5 @@
-﻿
-#include "cuda_runtime.h"
-#include "device_launch_parameters.h"
-
+﻿#include <cuda_runtime.h>
+#include <device_launch_parameters.h>
 #include <iostream>
 #include <cmath>
 
@@ -23,7 +21,7 @@ __global__ void jacobi_kernel(double* d_u, double* d_u_new, int n) {
 void initialize(double* u, int n) {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
-            if (j == 0) {
+            if (j == n-1) {
                 u[i * n + j] = 1.0f;  // Boundary conditions at y=1
             }
             else {
@@ -36,7 +34,7 @@ void initialize(double* u, int n) {
 double get_error(double* u, double* u_new, int n) {
     double error = 0.0f;
     for (int i = 0; i < n * n; i++) {
-        error = fmaxf(error, fabsf(u_new[i] - u[i]));
+        error = std::fmax(error, std::fabs(u_new[i] - u[i]));
     }
     return error;
 }
